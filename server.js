@@ -1,12 +1,15 @@
+const path = require('path')
 const express = require('express')
 const dotenv = require('dotenv')
 const errorHandler = require('./middleware/error')
+
 // const logger = require('./middleware/logger')
 const morgan = require('morgan')
 const colors = require('colors')
 const connectDB = require('./config/db')
+const fileupload = require('express-fileupload')
 
-//load env files
+//load env variables
 
 dotenv.config({path:'./config/config.env'})
 
@@ -17,6 +20,7 @@ connectDB()
 //Routesfiles
 
 const bootcamps = require('./routes/bootcamps')
+const courses = require('./routes/courses')
 const nodemon = require('nodemon')
 
 
@@ -37,6 +41,13 @@ if (process.env.NODE_ENV ==="development") {
 // mount routers
 
 app.use('/api/v1/bootcamps', bootcamps);
+app.use('/api/v1/courses', courses);
+// file upload 
+
+app.use(fileupload())
+
+//Set static folder 
+app.use(express.static(path.join(__dirname, 'public')))
 
 app.use(errorHandler)
 
